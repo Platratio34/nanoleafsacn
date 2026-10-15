@@ -73,6 +73,8 @@
             }
         }
 
+        let lastUni = -1
+        let uniEventSource;
         function updateUni() {
             const uniI = Number(universeEl.value)
             if(uniI < 0) {
@@ -82,8 +84,15 @@
                 uniI = 0xff
                 universeEl.value = uniI
             }
+            if(lastUni == uniI)
+                return;
             if(uniI > 0) {
-                fetch('/api/sacn/universe/'+uniI).then(rsp => rsp.json()).then(json => {
+                uniEventSource = new EventSource(`/api/sacn/universe/${uniI}/sse`);
+                uniEventSource.onerror = event => {
+                    console.error(`Error in SACN SSE: ${event}`)
+                }
+                uniEventSource.addEventListener('data', event => {
+                    const json = JSON.parse(event.data);
                     for(let r = 0; r < 16; r++) {
                         const tr = document.createElement('tr')
                         for(let c = 0; c < 32; c++) {
@@ -109,6 +118,7 @@
                 }
             }
         }
+        updateUni()
 
         function update() {
             fetch('/api/sacn/sources').then(rsp => rsp.json()).then(json => {
@@ -134,7 +144,6 @@
                     sourcesEls[name].innerText = l
                 })
             })
-            updateUni()
         }
 
         update();

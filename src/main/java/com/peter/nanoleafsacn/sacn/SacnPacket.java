@@ -1,10 +1,6 @@
 package com.peter.nanoleafsacn.sacn;
 
-import java.net.DatagramPacket;
-
 import org.apache.logging.log4j.Logger;
-
-import com.peter.nanoleafsacn.Main;
 
 public class SacnPacket {
 

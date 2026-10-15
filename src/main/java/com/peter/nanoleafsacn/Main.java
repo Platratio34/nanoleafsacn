@@ -42,12 +42,12 @@ public class Main {
 
     public static Path savePath;
 
-    private static boolean running = true;
-
     public static final Logger LOGGER = LogManager.getLogger("NanoleafSACN");
 
     public static final HashSet<String> flags = new HashSet<>();
     public static final HashMap<String, String> configVals = new HashMap<>();
+
+    public static final UpdateThread updateThread = new UpdateThread();
 
     public static void main(String[] args) {
         for (String a : args) {
@@ -64,7 +64,15 @@ public class Main {
             }
         }
 
-        webserver = new WebServer(8080, configVals.getOrDefault("root", ""));
+        int port = 8080;
+        if (configVals.containsKey("p")) {
+            try {
+                port = Integer.parseInt(configVals.get("p"));
+            } catch (NumberFormatException e) {
+
+            }
+        }
+        webserver = new WebServer(port, configVals.getOrDefault("root", ""));
         savePath = webserver.rootPath.resolve(configVals.getOrDefault("path", "data/save.json"));
         LOGGER.info("Save path: {}", savePath);
 
@@ -108,25 +116,13 @@ public class Main {
         webserver.addEndpoint(new SacnAPI());
         webserver.addEndpoint(new WebPage(URLPath.of("sacn"), "sacn.html"));
 
-        Thread updateThread = new Thread(() -> {
-            while (running) {
-                for (Device d : activeDevices.values()) {
-                    d.updateDmx();
-                }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, "UpdateThread");
         updateThread.start();
 
         if (!flags.contains("nt")) {
             tui.addCommand(new SimpleCommand("stop", cmd -> {
                 webserver.logger.info("Stopping . . .");
                 discoveryListener.stop();
-                running = false;
+                updateThread.stop();
                 System.exit(0);
             }).setDescription("Stops the server"));
             tui.addCommand(sacnListener.getCommand());

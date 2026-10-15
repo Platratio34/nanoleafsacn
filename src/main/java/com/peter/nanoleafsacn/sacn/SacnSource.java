@@ -2,8 +2,6 @@ package com.peter.nanoleafsacn.sacn;
 
 import java.util.HashMap;
 
-import com.peter.nanoleafsacn.Main;
-
 public class SacnSource {
 
     public final String name;

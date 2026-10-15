@@ -11,9 +11,6 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.peter.nanoleafsacn.api.Device;
-import com.peter.nanoleafsacn.http.HTTPMessage;
-import com.peter.webserver.tui.Command;
 import com.peter.webserver.tui.SimpleCommand;
 
 public class SacnListener {
@@ -124,7 +121,7 @@ public class SacnListener {
                 socket.setReuseAddress(true);
                 socket.joinGroup(groupAddress, networkInterface);
 
-                byte[] buffer = new byte[65535];
+                byte[] buffer = new byte[1024];
 
                 while (running) {
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -134,15 +131,20 @@ public class SacnListener {
                     // logger.debug("Got packet");
 
                     SacnPacket sacnPacket = new SacnPacket(buffer, packet.getLength(), logger);
-                    if(!sacnPacket.valid)
+                    if (!sacnPacket.valid) {
+                        logger.debug("Invalid packet type");
                         continue;
+                    }
                     // logger.debug("- Was SACN");
                     if (!sources.containsKey(sacnPacket.sourceName)) {
+                        logger.info("New sACN source `{}`", sacnPacket.sourceName);
                         sources.put(sacnPacket.sourceName, new SacnSource(sacnPacket.sourceName));
                     }
                     sources.get(sacnPacket.sourceName).update(sacnPacket);
                 }
                 socket.leaveGroup(groupAddress, networkInterface);
+                logger.info("Leaving multicast group {} on port {} on interface {} ...", groupIp, PORT,
+                        networkInterface.getName());
 
             } catch (IOException e) {
                 e.printStackTrace();

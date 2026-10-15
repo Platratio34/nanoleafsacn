@@ -1,7 +1,5 @@
 package com.peter.nanoleafsacn.sacn;
 
-import com.peter.nanoleafsacn.Main;
-
 public class SacnUniverse {
 
     public final int universe;
