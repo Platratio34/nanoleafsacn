@@ -1,0 +1,6 @@
+target/*
+!target/nanoleafsacn*.jar
+logs/*
+.vscode/*
+.github/*
+run/data/*
