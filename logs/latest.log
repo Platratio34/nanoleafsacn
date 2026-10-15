@@ -1,0 +1,11 @@
+2026-10-14 18:15:40.282 [main] INFO  [SacnListener] Test
+2026-10-14 18:15:40.288 [main] INFO  [NanoleafSACN] `root`: `run/`
+2026-10-14 18:15:40.294 [main] INFO  [WebServer] Creating new web server
+2026-10-14 18:15:40.296 [main] INFO  [NanoleafSACN] Save path: C:\Users\pcral\git\nanoleafsacn\run\data\save.json
+2026-10-14 18:15:40.298 [NativeServer-8080] INFO  [NativeServer-8080] Started server on port 8080
+2026-10-14 18:19:54.671 [NativeServer-8080-W3] INFO  [SacnListener] Adding universe 1
+2026-10-14 18:19:54.673 [SacnListener-1] INFO  [SacnListener] Starting thread for universe 1
+2026-10-14 18:19:54.675 [SacnListener-1] INFO  [SacnListener] Joining multicast group 239.255.0.1 on port 5568 on interface ethernet_32769 ...
+2026-10-14 18:22:27.866 [NativeServer-8080-W1] WARN  [NativeServer-8080] Unknown HTTP version `` to `` with method ``
+2026-10-14 18:22:27.867 [NativeServer-8080-W1] WARN  [NativeServer-8080] Received non-HTTP message
+2026-10-14 18:34:28.942 [main] INFO  [WebServer] Stopping . . .

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>SACN - NlSACN</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel='stylesheet' type='text/css' media='screen' href='/style/default.css'>
+    <!-- <script src='script/common.js'></script> -->
+    <style>
+        .zero {
+            color: #a0a0a0
+        }
+
+        #universeTbl td {
+            width: 20pt;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h1>SACN Status</h1>
+        </div>
+
+        <div class="row">
+            <h3>Sources</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Active Universes</th>
+                    </tr>
+                </thead>
+                <tbody id="sources">
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <h3>Universe <input type="number" id="universe" value="0" onchange="updateUni()"></h3>
+
+            <table id="universeTbl">
+
+            </table>
+        </div>
+        
+    </div>
+
+    <script>
+        const sourcesEl = document.getElementById('sources')
+        const sourcesEls = {}
+        
+        const universeEl = document.getElementById('universe')
+        const universeTblEl = document.getElementById('universeTbl')
+
+        const uniEls = {}
+        
+        for(let r = 0; r < 16; r++) {
+            const tr = document.createElement('tr')
+            universeTblEl.appendChild(tr)
+            for(let c = 0; c < 32; c++) {
+                const td = document.createElement('td')
+                tr.appendChild(td)
+                let address = (r * 32) + c
+                uniEls[address] = td
+                td.value = '-'
+            }
+        }
+
+        function updateUni() {
+            const uniI = Number(universeEl.value)
+            if(uniI < 0) {
+                uniI = 0
+                universeEl.value = uniI
+            } else if(uniI > 0xffff) {
+                uniI = 0xff
+                universeEl.value = uniI
+            }
+            if(uniI > 0) {
+                fetch('/api/sacn/universe/'+uniI).then(rsp => rsp.json()).then(json => {
+                    for(let r = 0; r < 16; r++) {
+                        const tr = document.createElement('tr')
+                        for(let c = 0; c < 32; c++) {
+                            let address = (r * 32) + c
+                            const td = uniEls[address]
+                            let v = json.data[address]
+                            td.innerText = v
+                            if(v == 0) {
+                                td.classList.add('zero')   
+                            } else {
+                                td.classList.remove('zero') 
+                            }
+                            td.title = `Address: ${address+1}\nPrio: ${json.prio[address]}`
+                        }
+                    }
+                })
+            } else {
+                for(let a = 0; a < 512; a++) {
+                    const td = uniEls[a]
+                    td.classList.add('zero')   
+                    td.innerText = '-'
+                    td.title = `Address: ${a+1}\nPrio: -`
+                }
+            }
+        }
+
+        function update() {
+            fetch('/api/sacn/sources').then(rsp => rsp.json()).then(json => {
+                Object.keys(json).forEach(name => {
+                    if(!sourcesEls[name]) {
+                        const tr = document.createElement('tr')
+                        sourcesEl.appendChild(tr)
+
+                        const nameEl = document.createElement('td')
+                        nameEl.innerText = name
+                        tr.appendChild(nameEl)
+
+                        const unisEl = document.createElement('td')
+                        tr.appendChild(unisEl)
+                        sourcesEls[name] = unisEl
+                    }
+                    let l = ''
+                    json[name].universes.forEach(u => {
+                        if(l.length > 0)
+                            l += ', '
+                        l += u
+                    })
+                    sourcesEls[name].innerText = l
+                })
+            })
+            updateUni()
+        }
+
+        update();
+        setInterval(update, 500)
+    </script>
+
+    $BANNER$
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+
+</html>

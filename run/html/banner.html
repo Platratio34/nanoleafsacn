@@ -1,0 +1,60 @@
+<div id="banner">
+    <a href="/" class="inline">Home</a>
+    |
+    <button id="account_name" class="name" type="button" data-bs-toggle="collapse" data-bs-target="#account_userMenu">Menu</button>
+    <!-- <a href="/login" id="account_loginLink" class="inline">Login</a> -->
+    <div id="account_userMenu" class="collapse">
+        <a href="/devices" class="inline">Devices</a>
+        <br>
+        <a href="/sacn" class="inline">SACN</a>
+        <br>
+        <hr>
+        <!-- <h4>Account</h4>
+        <a href="/passwordChange" id="account_changePassLink" class="inline">Change Password</a>
+        <br>
+        <a href="/logout" id="account_logoutLink" class="inline">Logout</a> -->
+    </div>
+</div>
+<script>
+    // function updateAccountBanner() {
+    //     const accountNameEl = document.getElementById('account_name')
+    //     const accountLoginLinkEl = document.getElementById('account_loginLink')
+    //     const accountLogoutLinkEl = document.getElementById('account_logoutLink')
+        
+    //     let username = getCookie('vcs:user')
+    //     if (accountNameEl != null) {
+    //         if (username) {
+    //             accountNameEl.classList.remove('hidden')
+    //             accountNameEl.innerText = capitalize(username)
+    //         } else {
+    //             accountNameEl.classList.add('hidden')
+    //         }
+    //     }
+    //     if (accountLoginLinkEl != null) {
+    //         if (username) {
+    //             accountLoginLinkEl.classList.add('hidden')
+    //         } else {
+    //             accountLoginLinkEl.classList.remove('hidden')
+    //         }
+    //     }
+    //     if (accountLogoutLinkEl != null) {
+    //         if (username) {
+    //             accountLogoutLinkEl.classList.remove('hidden')
+    //         } else {
+    //             accountLogoutLinkEl.classList.add('hidden')
+    //         }
+    //     }
+
+    //     if(username) {
+    //         document.querySelectorAll('.visibleLoggedIn').forEach(el => {
+    //             el.classList.remove('hidden')
+    //         })
+    //     } else {
+    //         document.querySelectorAll('.visibleLoggedIn').forEach(el => {
+    //             el.classList.add('hidden')
+    //         })
+    //     }
+    // }
+    // setInterval(updateAccountBanner, 1000)
+    // updateAccountBanner()
+</script>
